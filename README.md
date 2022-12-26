@@ -1,4 +1,5 @@
 # congenial-octo-telegram
+
 A simple users management system with concurrent
 
 ## Task
@@ -19,3 +20,8 @@ A simple users management system with concurrent
 - POST - /user - создание карточки пользователя
 - PUT - /user - изменение карточки пользователя
 - POST - /user/login - вход в систему. Данная ручка должна отдавать токен, позволяющий в дальнейшем идентифицировать пользователя, при работе с ручкой изменения, можно использовать внешние решения для работы с токенами, например jwt https://github.com/golang-jwt/jwt. Способ передачи токена - любой.
+
+## How to use
+
+- `go test -run . auth/server` - to test server
+- `go test -run . auth/store` - to test in-memory store
