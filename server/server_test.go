@@ -52,7 +52,7 @@ func TestUserEndpoint(t *testing.T) {
 	})
 
 	t.Run("returns the method not allowed error if using wrong method", func(t *testing.T) {
-		request, _ := http.NewRequest(http.MethodPatch, "/user", nil)
+		request, _ := http.NewRequest(http.MethodPatch, "/user/", nil)
 		response := httptest.NewRecorder()
 
 		srv.ServeHTTP(response, request)
