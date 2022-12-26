@@ -51,6 +51,15 @@ func TestUserEndpoint(t *testing.T) {
 		assertStatus(t, response.Code, http.StatusBadGateway)
 	})
 
+	t.Run("returns the method not allowed error if using wrong method", func(t *testing.T) {
+		request, _ := http.NewRequest(http.MethodPatch, "/user", nil)
+		response := httptest.NewRecorder()
+
+		srv.ServeHTTP(response, request)
+
+		assertStatus(t, response.Code, http.StatusMethodNotAllowed)
+	})
+
 	t.Run("creates a user", func(t *testing.T) {
 		name := "Bob"
 		request := newPostUserRequest(name)
@@ -58,7 +67,7 @@ func TestUserEndpoint(t *testing.T) {
 
 		srv.ServeHTTP(response, request)
 
-		assertStatus(t, response.Code, http.StatusOK)
+		assertStatus(t, response.Code, http.StatusCreated)
 		got, ok := store.users[name]
 
 		if !ok {
