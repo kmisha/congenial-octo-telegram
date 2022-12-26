@@ -7,6 +7,10 @@ import (
 	"strings"
 )
 
+const (
+	PATH = "/user/"
+)
+
 type AuthServer struct {
 	store store.UsersStore
 }
@@ -16,8 +20,8 @@ func NewAuthServer(s store.UsersStore) *AuthServer {
 }
 
 func (s *AuthServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	isLoginPath := strings.HasPrefix(r.URL.Path, "/user/login")
-	isUserPath := strings.HasPrefix(r.URL.Path, "/user")
+	isLoginPath := strings.HasPrefix(r.URL.Path, PATH+"login")
+	isUserPath := strings.HasPrefix(r.URL.Path, PATH)
 
 	if isLoginPath {
 		s.processLogin(w, r)
@@ -32,7 +36,7 @@ func (s *AuthServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func getUserName(r *http.Request) string {
-	return strings.TrimPrefix(r.URL.Path, "/user/")
+	return strings.TrimPrefix(r.URL.Path, PATH)
 }
 
 func (s *AuthServer) processUser(w http.ResponseWriter, r *http.Request, name string) {
