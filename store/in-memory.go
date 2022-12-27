@@ -10,7 +10,7 @@ import (
 
 type UsersStore interface {
 	Create(name, login, pasword, phone string, birthDate time.Time) uuid.UUID
-	Update(user, patch *models.User) uuid.UUID
+	Update(id uuid.UUID, patch *models.User) uuid.UUID
 }
 
 type InMemoryUsersStore struct {
@@ -25,7 +25,7 @@ func NewInMemoryUsersStore() *InMemoryUsersStore {
 	}
 }
 
-func (s *InMemoryUsersStore) CreateUserRecord(name, login, password, phone string, birthDate time.Time) uuid.UUID {
+func (s *InMemoryUsersStore) Create(name, login, password, phone string, birthDate time.Time) uuid.UUID {
 	user := models.NewUser(name, login, password, phone, birthDate)
 	s.manageChange(func() {
 		s.store[user.ID] = *user
@@ -34,7 +34,7 @@ func (s *InMemoryUsersStore) CreateUserRecord(name, login, password, phone strin
 	return user.ID
 }
 
-func (s *InMemoryUsersStore) UpdateUserRecord(id uuid.UUID, patch *models.User) uuid.UUID {
+func (s *InMemoryUsersStore) Update(id uuid.UUID, patch *models.User) uuid.UUID {
 	s.manageChange(func() {
 		user := s.store[id]
 		user.Patch(patch)

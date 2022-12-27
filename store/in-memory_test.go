@@ -18,13 +18,13 @@ func TestNewInMemoryUsersStore(t *testing.T) {
 	}
 }
 
-func TestCreateUserRecord(t *testing.T) {
+func TestCreate(t *testing.T) {
 
 	t.Run("we can add a user to the store", func(t *testing.T) {
 		store := NewInMemoryUsersStore()
 		name := "John"
 
-		id := store.CreateUserRecord(name, "gwen", "123", "", time.Now())
+		id := store.Create(name, "gwen", "123", "", time.Now())
 
 		_, ok := store.store[id]
 
@@ -44,7 +44,7 @@ func TestCreateUserRecord(t *testing.T) {
 			go func(idx int) {
 				defer wg.Done()
 				name := fmt.Sprintf("John %d", idx+1)
-				store.CreateUserRecord(name, "gwen", "123", "", time.Now())
+				store.Create(name, "gwen", "123", "", time.Now())
 			}(i)
 		}
 
@@ -56,15 +56,15 @@ func TestCreateUserRecord(t *testing.T) {
 	})
 }
 
-func TestUpdateUserRecord(t *testing.T) {
+func TestUpdate(t *testing.T) {
 
 	t.Run("we can update a user in the store", func(t *testing.T) {
 		store := NewInMemoryUsersStore()
 		user := "John"
 		want := models.NewUser("Bob", "sten", "321", "123", time.Now())
 
-		id := store.CreateUserRecord(user, "gwen", "123", "", time.Now())
-		store.UpdateUserRecord(id, want)
+		id := store.Create(user, "gwen", "123", "", time.Now())
+		store.Update(id, want)
 
 		got, ok := store.store[id]
 
@@ -84,7 +84,7 @@ func TestUpdateUserRecord(t *testing.T) {
 
 		for i := 0; i < wantedCount; i++ {
 			name := fmt.Sprintf("John%d", i)
-			ids[i] = store.CreateUserRecord(name, "gwen", "123", "", time.Now())
+			ids[i] = store.Create(name, "gwen", "123", "", time.Now())
 		}
 
 		var wg sync.WaitGroup
@@ -95,7 +95,7 @@ func TestUpdateUserRecord(t *testing.T) {
 				defer wg.Done()
 
 				patch := models.NewUser("Bob", "gwen", "123", "", time.Now())
-				store.UpdateUserRecord(id, patch)
+				store.Update(id, patch)
 			}(id)
 		}
 
