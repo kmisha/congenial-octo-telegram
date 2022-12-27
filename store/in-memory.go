@@ -1,34 +1,47 @@
 package store
 
-import "sync"
+import (
+	"auth/models"
+	"sync"
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type UsersStore interface {
-	CreateUserRecord(name string)
-	UpdateUserRecord(name, patch string)
+	Create(name, login, pasword, phone string, birthDate time.Time) uuid.UUID
+	Update(user, patch *models.User) uuid.UUID
 }
 
 type InMemoryUsersStore struct {
 	mu    sync.Mutex
-	store map[string]string
+	store map[uuid.UUID]models.User
 }
 
 func NewInMemoryUsersStore() *InMemoryUsersStore {
 	return &InMemoryUsersStore{
 		sync.Mutex{},
-		map[string]string{},
+		map[uuid.UUID]models.User{},
 	}
 }
 
-func (s *InMemoryUsersStore) CreateUserRecord(name string) {
+func (s *InMemoryUsersStore) CreateUserRecord(name, login, password, phone string, birthDate time.Time) uuid.UUID {
+	user := models.NewUser(name, login, password, phone, birthDate)
 	s.manageChange(func() {
-		s.store[name] = name
+		s.store[user.ID] = *user
 	})
+
+	return user.ID
 }
 
-func (s *InMemoryUsersStore) UpdateUserRecord(name string, patch string) {
+func (s *InMemoryUsersStore) UpdateUserRecord(id uuid.UUID, patch *models.User) uuid.UUID {
 	s.manageChange(func() {
-		s.store[name] = patch
+		user := s.store[id]
+		user.Patch(patch)
+		s.store[id] = user
 	})
+
+	return id
 }
 
 func (s *InMemoryUsersStore) manageChange(fn func()) {
