@@ -20,15 +20,20 @@ func NewInMemoryUsersStore() *InMemoryUsersStore {
 }
 
 func (s *InMemoryUsersStore) CreateUserRecord(name string) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	s.store[name] = name
+	s.manageChange(func() {
+		s.store[name] = name
+	})
 }
 
 func (s *InMemoryUsersStore) UpdateUserRecord(name string, patch string) {
+	s.manageChange(func() {
+		s.store[name] = patch
+	})
+}
+
+func (s *InMemoryUsersStore) manageChange(fn func()) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	s.store[name] = patch
+	fn()
 }
