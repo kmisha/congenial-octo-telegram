@@ -1,19 +1,23 @@
 package main
 
 import (
-	"auth/server"
-	"auth/store"
 	"fmt"
 	"log"
 	"net/http"
+
+	"auth/server"
+	"auth/store"
+
+	"github.com/go-chi/jwtauth/v5"
 )
 
 const PORT = 5000
 
 func main() {
 	str := store.NewInMemoryUsersStore()
-	srv := server.NewAuthServer(str)
+	token := jwtauth.New("HS256", []byte("secret"), nil)
+	srv := server.NewAuthServer(str, *token)
 
-	fmt.Printf("Start server at %d PORT", PORT)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", PORT), srv))
+	log.Printf("Start server at %d PORT", PORT)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", PORT), srv.Router))
 }
