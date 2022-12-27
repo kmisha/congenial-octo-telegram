@@ -24,7 +24,6 @@ A simple users management system with concurrent
 ## How to use
 
 - `go run cmd/main.go` - to run server
-- `go test -run . auth/server` - to run unit tests for server
+- ~~`go test -run . auth/server` - to run unit tests for server~~
 - `go test -run . auth/store` - to run unit tests for store
-- `go test -run . auth/store` - to run unit tests for store
-- `go test -run . auth/cmd` - to run interation tests
+- ~~`go test -run . auth/cmd` - to run interation tests~~
